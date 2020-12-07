@@ -60,10 +60,12 @@ RUN apk add tzdata
 
 # Other configuration
 
+COPY prompt.sh /etc/profile.d/prompt.sh
 COPY entrypoint.sh /etc/entrypoint.sh
+COPY logcmd.sh /usr/local/bin/logcmd.sh
 
 RUN true \
-    && chmod 755 /etc/entrypoint.sh \
+    && chmod 755 /etc/entrypoint.sh /usr/local/bin/logcmd.sh /etc/profile.d/prompt.sh \
     && adduser -u $HOST_UID -s /bin/bash -D -H builder \
     && cp /usr/share/zoneinfo/UTC /etc/localtime \
     && touch /etc/abuild.builder.conf \
