@@ -4,16 +4,28 @@ nicedate() { date +%Y%m%d-%H%M%S; }
 
 logdir="$HOME/logs"
 
+cmdname=$(basename $0)
+usagedate=$(nicedate)
 usage() {
     cat <<ENDUSAGE
-Usage: $0 <log-basename> <cmd...>
-Log a command and run it
+Usage: $cmdname <log-basename> <cmd...>
+Run a command and log its output to $logdir
+
+EXAMPLE
+Run 'abuild -rK', logging all output to a file like
+$logdir/$usagedate-rpi4-default-config.log:
+    $cmdname rpi4-default-config abuild -rK
+
+ARGUMENTS
     log-basename:
         The base name for the logfile
-        Saves logs in $logdir as '$logdir/$(nicedate)-BASENAME
+        Saves logs in $logdir as '$logdir/$usagedate-BASENAME'
     cmd:
         A command to run
-Logs the command to the start of the logfile.
+
+BEHAVIOR
+Logs the command itself to the start of the logfile.
+Logs STDOUT and STDERR together.
 At the end, prints the start and end time of the command.
 Also writes all output to stdout.
 ENDUSAGE
@@ -46,9 +58,4 @@ runcmd() {
 }
 
 runcmd "$@" | tee "$logfile"
-
-# echo "$@" | tee "$logfile"
-# $@ 2>&1 | tee "$logfile"
-# echo "START: $start" | tee "$logfile"
-# echo "END:   $(nicedate)" | tee "$logfile"
-echo "Log saved to $logfile"
+cho "Log saved to $logfile"

@@ -7,7 +7,9 @@ but want to build Alpine packages, such as a kernel.
 
 ## Using it
 
-1. Build the container: `docker build -t alpinebuilder:latest .`
+1. Build the container: `docker build -t alpinebuilder:latest --build-args HOST_UID=1001 .`
+
+    - Note the `HOST_UID` must be set to your host user's UID for permissions to work properly. (Find this with the `id` command on your Raspberry Pi.)
 
 2. Set up a directory on your Docker host for artifacts that you want to keep after you exit:
     `mkdir -p ~/alpinebuilder/{home,distfiles}`
@@ -28,6 +30,10 @@ but want to build Alpine packages, such as a kernel.
 7. Now you can build packages. For instance, to build the kernel with the default settings, run this in the container: `cd ~/aports/main/linux-rpi; abuild -rKd`.
 
     - I like to log the results, so I added a simple `logcmd.sh` to the container. You can run it like `logcmd.sh LOGNAME abuild -rKd` and it will save the full log to a file like `~/logs/20201205-211333-LOGNAME.log`, as well as emit all messages to STDOUT.
+
+    - You can use passwordless `sudo` to install packages if you need to.
+
+## Further reading
 
 Some helpful links:
 

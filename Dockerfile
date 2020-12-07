@@ -1,13 +1,9 @@
 FROM alpine:3.12
 LABEL maintainer "me@micahrl.com"
 
-ENV HOST_UID=1001
 ENV USER_NAME="Your Name Lol"
 ENV USER_EMAIL="you@example.com"
 ENV TIMEZONE=UTC
-
-VOLUME /home/builder
-VOLUME /var/cache/distfiles
 
 # Install packages
 
@@ -64,9 +60,17 @@ COPY prompt.sh /etc/profile.d/prompt.sh
 COPY entrypoint.sh /etc/entrypoint.sh
 COPY logcmd.sh /usr/local/bin/logcmd.sh
 
+ARG HOST_UID=1001
+RUN adduser -u $HOST_UID -s /bin/bash -D builder
+
+# To make sure volume dirs have the right permissions whether theye're mounted or not, you have to do this.
+RUN chown -R builder /home/builder /var/cache/distfiles
+VOLUME /home/builder
+VOLUME /var/cache/distfiles
+RUN chown -R builder /home/builder /var/cache/distfiles
+
 RUN true \
     && chmod 755 /etc/entrypoint.sh /usr/local/bin/logcmd.sh /etc/profile.d/prompt.sh \
-    && adduser -u $HOST_UID -s /bin/bash -D -H builder \
     && cp /usr/share/zoneinfo/UTC /etc/localtime \
     && touch /etc/abuild.builder.conf \
     && chown builder /etc/abuild.builder.conf /etc/localtime \
