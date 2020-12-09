@@ -52,7 +52,13 @@ RUN true \
         mkinitfs \
     && true
 
-RUN apk add tzdata
+# Some quality of life improvements
+RUN true \
+    && apk add \
+        ripgrep \
+        tzdata \
+        vim \
+    && true
 
 # Other configuration
 
