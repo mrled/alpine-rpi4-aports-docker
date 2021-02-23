@@ -1,29 +1,46 @@
 # alpine-rpi4-aports-docker
 
-A Dockerfile for building Alpine packages for and on a Raspberry Pi 4.
+A Docker image for building Alpine packages for and on a Raspberry Pi 4.
 
 Intended if you have an rpi4 running something other than Alpine,
 but want to build Alpine packages, such as a kernel.
 
 ## Using it
 
-1. Build the container: `docker build -t alpinebuilder:latest --build-arg HOST_UID=1001 .`
+1. Build the container:
 
-    - Note the `HOST_UID` must be set to your host user's UID for permissions to work properly. (Find this with the `id` command on your Raspberry Pi.)
+        docker build -t alpinebuilder:latest --build-arg HOST_UID=$(id -u) .
+
+    - Note the `HOST_UID` must be set to your host user's UID for permissions to work properly.
+        We use the `id` command to inject it automatically.)
 
 2. Set up a directory on your Docker host for artifacts that you want to keep after you exit:
-    `mkdir -p ~/alpinebuilder/{home,distfiles}`
+
+        mkdir -p ~/alpinebuilder/{home,distfiles}
 
 3. If you have an Alpine builder key, make sure it's in `~/alpinebuilder/home/.abuild`.
     If not, we'll make one later.
 
-4. Start the container: `docker run -it -v ~/alpinebuilder/home:/home/builder -v ~/alpinebuilder/distfiles:/var/cache/distfiles -e USER_NAME='Micah R Ledbetter' -e USER_EMAIL='me@micahrl.com' -e TIMEZONE=US/Central alpinebuilder:latest`
+4. Start the container:
+
+        docker run -it \
+            -v ~/alpinebuilder/home:/home/builder \
+            -v ~/alpinebuilder/distfiles:/var/cache/distfiles \
+            -e USER_NAME='Micah R Ledbetter' \
+            -e USER_EMAIL='me@micahrl.com' \
+            -e TIMEZONE=US/Central \
+            alpinebuilder:latest
 
 5. You need to configure an Alpine builder key
 
-    - If you don't have an Alpine builder key, you'll need to generate one in the container: `abuild-keygen -a -i`
+    - If you don't have an Alpine builder key, you'll need to generate one in the container:
 
-    - If you DO have an Alpine builder key, put it in `~/alpinebuilder/home/.abuild`, and _make sure_ the absolute path is specified in `~/alpinebuilder/home/.abuild/abuild.conf` to refer to `/home/builder/.abuild`, because that is the build user in the container. e.g. have this line in `abuild.conf`: `PACKAGER_PRIVKEY="/home/builder/.abuild/me@micahrl.com-5fc94d02.rsa"`
+            abuild-keygen -a -i
+
+    - If you DO have an Alpine builder key, put it in `~/alpinebuilder/home/.abuild`, and _make sure_ the absolute path is specified in `~/alpinebuilder/home/.abuild/abuild.conf` to refer to `/home/builder/.abuild`, because that is the build user in the container.
+        e.g. have this line in `abuild.conf`
+
+            PACKAGER_PRIVKEY="/home/builder/.abuild/me@micahrl.com-5fc94d02.rsa"
 
 6. If you haven't checked out aports, you'll need to do that in your homedir in the container: `git clone git://git.alpinelinux.org/aports`. You may want to use a branch for your work.
 
