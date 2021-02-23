@@ -58,4 +58,4 @@ runcmd() {
 }
 
 runcmd "$@" | tee "$logfile"
-cho "Log saved to $logfile"
+echo "Log saved to $logfile"
