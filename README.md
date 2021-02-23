@@ -33,9 +33,12 @@ but want to build Alpine packages, such as a kernel.
 
 5. You need to configure an Alpine builder key
 
-    - If you don't have an Alpine builder key, you'll need to generate one in the container:
+    - If you don't have an Alpine builder key, you'll need to generate one in the container, and copy the public key so that abuild knows how to find it:
 
             abuild-keygen -a -i
+            sudo cp ~/.abuild/me@micahrl.com-5fc94d02.rsa.pub /etc/apk/keys
+
+        Note that once there is a key present in ~/.abuild, the entrypoint script will automatically copy it when the container starts, so you don't have to do the second command every time the container starts.
 
     - If you DO have an Alpine builder key, put it in `~/alpinebuilder/home/.abuild`, and _make sure_ the absolute path is specified in `~/alpinebuilder/home/.abuild/abuild.conf` to refer to `/home/builder/.abuild`, because that is the build user in the container.
         e.g. have this line in `abuild.conf`
@@ -56,6 +59,11 @@ Some helpful links:
 
 - <https://wiki.alpinelinux.org/wiki/Custom_Kernel>
 - <https://wiki.alpinelinux.org/wiki/Creating_an_Alpine_package#Setup_your_system_and_account>
+
+### Notes and examples
+
+- [Building a kernel](docs/build-kernel.md)
+- [Reusing a Raspbian sdcard for Alpine](docs/reuse-raspbian-sdcard.md)
 
 ## Troubleshooting
 
