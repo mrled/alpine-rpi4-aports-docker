@@ -7,7 +7,7 @@ but want to build Alpine packages, such as a kernel.
 
 ## Using it
 
-1. Build the container: `docker build -t alpinebuilder:latest --build-args HOST_UID=1001 .`
+1. Build the container: `docker build -t alpinebuilder:latest --build-arg HOST_UID=1001 .`
 
     - Note the `HOST_UID` must be set to your host user's UID for permissions to work properly. (Find this with the `id` command on your Raspberry Pi.)
 
@@ -17,7 +17,7 @@ but want to build Alpine packages, such as a kernel.
 3. If you have an Alpine builder key, make sure it's in `~/alpinebuilder/home/.abuild`.
     If not, we'll make one later.
 
-4. Start the container: `docker run -it alpinebuilder:latest -v ~/alpinebuilder/home:/home/builder -v ~/alpinebuilder/distfiles:/var/cache/distfiles -e USER_NAME='Micah R Ledbetter' -e USER_EMAIL='me@micahrl.com' -e TIMEZONE=US/Central`
+4. Start the container: `docker run -it -v ~/alpinebuilder/home:/home/builder -v ~/alpinebuilder/distfiles:/var/cache/distfiles -e USER_NAME='Micah R Ledbetter' -e USER_EMAIL='me@micahrl.com' -e TIMEZONE=US/Central alpinebuilder:latest`
 
 5. You need to configure an Alpine builder key
 
@@ -37,8 +37,8 @@ but want to build Alpine packages, such as a kernel.
 
 Some helpful links:
 
-- https://wiki.alpinelinux.org/wiki/Custom_Kernel
-- https://wiki.alpinelinux.org/wiki/Creating_an_Alpine_package#Setup_your_system_and_account
+- <https://wiki.alpinelinux.org/wiki/Custom_Kernel>
+- <https://wiki.alpinelinux.org/wiki/Creating_an_Alpine_package#Setup_your_system_and_account>
 
 ## Troubleshooting
 
